@@ -60,30 +60,24 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// --- Início da Alteração do CORS ---
+// --- Início da Alteração do CORS (SOLUÇÃO RECOMENDADA) ---
+var productionUrl = "https://desafio-stefanini-cadastro.vercel.app"; // <-- Coloque sua URL de produção final aqui
 
-// Pega as origens permitidas da configuração (appsettings.json ou variáveis de ambiente)
-var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-// Validação para garantir que a configuração existe
-if (allowedOrigins == null || !allowedOrigins.Any())
-{
-    throw new InvalidOperationException("Nenhuma origem permitida para CORS foi configurada. Adicione a chave 'AllowedOrigins' no appsettings.json ou como variável de ambiente.");
-}
-
-// Configura a política de CORS para usar as origens lidas da configuração
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins, policy =>
     {
-        policy.WithOrigins(allowedOrigins) // Usa a variável com as origens
+        policy.WithOrigins("http://localhost:3000") // Permite o ambiente local
+              .SetIsOriginAllowed(origin => // Permite subdomínios do Vercel
+              {
+                  var host = new Uri(origin).Host;
+                  return host.EndsWith("-ismael-santos-projects.vercel.app") || host.Equals("desafio-stefanini-cadastro.vercel.app");
+              })
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
-
 // --- Fim da Alteração do CORS ---
-
 
 // Autenticação JWT
 builder.Services.AddAuthentication(options =>
@@ -109,15 +103,13 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApiDbContext>();
-
     context.Database.Migrate();
-
     if (!context.Users.Any())
     {
         context.Users.Add(new User
         {
             Username = "admin",
-            Password = "password123" // Lembre-se que em um projeto real, a senha deve ser hasheada
+            Password = "password123"
         });
         context.SaveChanges();
     }
@@ -148,10 +140,7 @@ app.Run();
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
     private readonly IApiVersionDescriptionProvider provider;
-
-    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
-        => this.provider = provider;
-
+    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => this.provider = provider;
     public void Configure(SwaggerGenOptions options)
     {
         foreach (var description in provider.ApiVersionDescriptions)
