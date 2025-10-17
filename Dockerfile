@@ -1,6 +1,6 @@
 # Estágio 1: Compilação (Build)
-# Usamos a imagem oficial do .NET SDK para compilar o projeto
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+# Usamos a imagem oficial do .NET SDK 8.0 para compilar o projeto
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
 
 # Copia os arquivos de projeto e solução e restaura as dependências
@@ -15,8 +15,8 @@ WORKDIR /source/CadastroPessoas.Api
 RUN dotnet publish -c Release -o /app/out
 
 # Estágio 2: Execução (Runtime)
-# Usamos uma imagem menor, apenas com o necessário para rodar a aplicação
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+# Usamos uma imagem menor, apenas com o necessário para rodar a aplicação .NET 8
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/out .
 
