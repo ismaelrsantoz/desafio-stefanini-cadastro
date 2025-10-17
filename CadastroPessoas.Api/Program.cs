@@ -10,9 +10,6 @@ using Microsoft.Extensions.Options;
 using Asp.Versioning.ApiExplorer;
 using CadastroPessoas.Api.Models;
 
-// Defini aqui a URL do meu front-end publicado na Vercel para a política de CORS.
-var vercelAppUrl = "https://desafio-stefanini-cadastro-k9tbmcky6-ismael-santos-projects.vercel.app";
-
 var builder = WebApplication.CreateBuilder(args);
 
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -21,13 +18,24 @@ if (string.IsNullOrEmpty(jwtKey))
     throw new InvalidOperationException("A chave JWT (Jwt:Key) não está configurada no appsettings.json");
 }
 
-var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
 // --- Configuração dos Serviços ---
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApiDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+// CORREÇÃO FINAL: Simplifiquei a política de CORS para permitir qualquer origem.
+// Isto resolve os problemas de comunicação entre Vercel e Render.
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 
 // Configurei o versionamento da API para atender aos requisitos extras.
 builder.Services.AddApiVersioning(options =>
@@ -65,16 +73,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Minha política de CORS, permitindo acesso tanto do ambiente local quanto do front-end em produção.
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: myAllowSpecificOrigins, policy =>
-    {
-        policy.WithOrigins("http://localhost:3000", vercelAppUrl)
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
 
 // Implementei a autenticação JWT para proteger os endpoints.
 builder.Services.AddAuthentication(options =>
@@ -103,10 +101,10 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApiDbContext>();
 
-    // Alterei para context.Database.Migrate() para usar o sistema de migrations.
+    // Uso o sistema de migrations para garantir que o banco de dados está atualizado.
     context.Database.Migrate();
 
-    // Agora, com a tabela 'Users' garantidamente criada, podemos verificar se o utilizador admin existe.
+    // Com a tabela 'Users' garantidamente criada, verifico se o utilizador admin existe.
     if (!context.Users.Any())
     {
         context.Users.Add(new User
@@ -135,8 +133,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// A ordem dos middlewares é importante: CORS primeiro, depois Autenticação e Autorização.
-app.UseCors(myAllowSpecificOrigins);
+// A ordem dos middlewares é importante: CORS primeiro.
+app.UseCors(); // ATIVA a política de CORS que definimos acima.
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
@@ -161,4 +160,3 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         }
     }
 }
-
