@@ -1,0 +1,14 @@
+/* src/App.css */
+.app-container {
+  text-align: center;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.app-header {
+  background-color: #282c34;
+  padding: 20px;
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
