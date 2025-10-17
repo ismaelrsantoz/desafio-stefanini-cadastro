@@ -10,6 +10,9 @@ using Microsoft.Extensions.Options;
 using Asp.Versioning.ApiExplorer;
 using CadastroPessoas.Api.Models;
 
+// Defini aqui a URL do meu front-end publicado na Vercel para a política de CORS.
+var vercelAppUrl = "https://desafio-stefanini-cadastro-k9tbmcky6-ismael-santos-projects.vercel.app";
+
 var builder = WebApplication.CreateBuilder(args);
 
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -18,24 +21,13 @@ if (string.IsNullOrEmpty(jwtKey))
     throw new InvalidOperationException("A chave JWT (Jwt:Key) não está configurada no appsettings.json");
 }
 
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 // --- Configuração dos Serviços ---
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApiDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-
-// CORREÇÃO FINAL: Simplifiquei a política de CORS para permitir qualquer origem.
-// Isto resolve os problemas de comunicação entre Vercel e Render.
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
-
 
 // Configurei o versionamento da API para atender aos requisitos extras.
 builder.Services.AddApiVersioning(options =>
@@ -73,6 +65,16 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Minha política de CORS, permitindo acesso tanto do ambiente local quanto do front-end em produção.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins, policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", vercelAppUrl)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 // Implementei a autenticação JWT para proteger os endpoints.
 builder.Services.AddAuthentication(options =>
@@ -134,7 +136,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // A ordem dos middlewares é importante: CORS primeiro.
-app.UseCors(); // ATIVA a política de CORS que definimos acima.
+app.UseCors(myAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -160,3 +162,4 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         }
     }
 }
+
