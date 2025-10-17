@@ -6,14 +6,13 @@ import {
   Paper,
   Typography,
   Avatar,
-  Link,
-  CssBaseline,
-  Grid
+  CssBaseline
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { toast } from 'react-toastify';
 
-// 1. REMOVEMOS A IMPORTAÇÃO DO SVG DAQUI
+
+const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5182";
 
 function Copyright(props) {
   return (
@@ -31,7 +30,8 @@ function Login({ onLoginSuccess }) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    fetch('http://localhost:5182/api/Auth/login', {
+    // Usei a variável apiUrl para montar a URL completa da requisição.
+    fetch(`${apiUrl}/api/Auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
@@ -76,7 +76,6 @@ function Login({ onLoginSuccess }) {
           {/* Logo Esquerdo */}
           <Box
             component="img"
-            // 2. USAMOS O CAMINHO PÚBLICO DA IMAGEM
             src="/logo-stefanini.svg"
             alt="Logotipo Stefanini"
             sx={{
@@ -135,14 +134,12 @@ function Login({ onLoginSuccess }) {
               >
                 Entrar
               </Button>
-              
             </Box>
           </Paper>
 
           {/* Logo Direito */}
           <Box
             component="img"
-            // 3. USAMOS O CAMINHO PÚBLICO DA IMAGEM
             src="/logo-stefanini.svg"
             alt="Logotipo Stefanini"
             sx={{

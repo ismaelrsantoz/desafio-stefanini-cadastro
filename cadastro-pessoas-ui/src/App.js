@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import PessoaForm from './components/PessoaForm';
 import PessoasList from './components/PessoasList';
 import PessoaFilter from './components/PessoaFilter';
-import { Container, Paper, Typography, Button, Box } from '@mui/material';
+import { Container, Paper, Button, Box } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LogoutIcon from '@mui/icons-material/Logout';
+
+// Centralizei a URL da API aqui para facilitar a manutenção e o deploy.
+const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5182";
 
 function App() {
   const [token, setToken] = useState(null);
@@ -32,7 +35,8 @@ function App() {
     if (filters.nome) params.append('nome', filters.nome);
     if (filters.cpf) params.append('cpf', filters.cpf);
     
-    fetch(`http://localhost:5182/api/v1/Pessoas?${params.toString()}`, { headers: getAuthHeaders() })
+    // CORREÇÃO: Utiliza a variável apiUrl
+    fetch(`${apiUrl}/api/v1/Pessoas?${params.toString()}`, { headers: getAuthHeaders() })
       .then(res => res.json())
       .then(data => { setPessoas(data); setIsLoading(false); })
       .catch(() => { setIsLoading(false); toast.error("Falha ao buscar dados da API."); });
@@ -40,7 +44,8 @@ function App() {
   
   const handleSave = (pessoa) => {
     const isEditing = !!pessoa.id;
-    const url = isEditing ? `http://localhost:5182/api/v1/Pessoas/${pessoa.id}` : 'http://localhost:5182/api/v1/Pessoas';
+    // CORREÇÃO: Utiliza a variável apiUrl
+    const url = isEditing ? `${apiUrl}/api/v1/Pessoas/${pessoa.id}` : `${apiUrl}/api/v1/Pessoas`;
     const method = isEditing ? 'PUT' : 'POST';
 
     fetch(url, { method, headers: getAuthHeaders(), body: JSON.stringify(pessoa) })
@@ -58,7 +63,8 @@ function App() {
   
   const handleDelete = (id) => {
     if (window.confirm('Tem certeza?')) {
-      fetch(`http://localhost:5182/api/v1/Pessoas/${id}`, { method: 'DELETE', headers: getAuthHeaders() })
+      // CORREÇÃO: Utiliza a variável apiUrl
+      fetch(`${apiUrl}/api/v1/Pessoas/${id}`, { method: 'DELETE', headers: getAuthHeaders() })
         .then(res => {
           if (res.ok) {
             toast.success('Pessoa excluída!');
@@ -70,20 +76,18 @@ function App() {
     }
   };
 
-  // --- INÍCIO DA CORREÇÃO ---
   const handleLogout = () => {
     setToken(null);
     setView('dashboard');
-    setPessoas([]);       // Limpa a lista de pessoas
-    setHasSearched(false); // Reseta o estado da busca
+    setPessoas([]);
+    setHasSearched(false);
   };
 
   const handleNavigate = (targetView) => {
     setView(targetView);
-    setPessoas([]);       // Limpa a lista de pessoas ao navegar
-    setHasSearched(false); // Reseta o estado da busca
+    setPessoas([]);
+    setHasSearched(false);
   };
-  // --- FIM DA CORREÇÃO ---
 
   if (!token) {
     return (
@@ -110,13 +114,11 @@ function App() {
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         
         {view !== 'dashboard' && (
-          // Usa a nova função de navegação para garantir a limpeza
           <Button startIcon={<ArrowBackIcon />} onClick={() => handleNavigate('dashboard')} sx={{ mb: 2 }}>
             Voltar ao Menu
           </Button>
         )}
 
-        {/* Usa a nova função de navegação */}
         {view === 'dashboard' && <Dashboard onNavigate={handleNavigate} />}
         
         {view === 'cadastro' && (
