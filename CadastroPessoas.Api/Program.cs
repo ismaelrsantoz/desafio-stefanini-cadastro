@@ -67,8 +67,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins, policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Permite o ambiente local
-              .SetIsOriginAllowed(origin => // Permite subdomínios do Vercel
+        policy.WithOrigins("*") 
+              .SetIsOriginAllowed(origin => 
               {
                   var host = new Uri(origin).Host;
                   return host.EndsWith("-ismael-santos-projects.vercel.app") || host.Equals("desafio-stefanini-cadastro.vercel.app");
