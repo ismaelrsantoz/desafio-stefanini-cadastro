@@ -60,19 +60,30 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// CORS - liberar localhost e o domínio do front-end
+// --- Início da Alteração do CORS ---
+
+// Pega as origens permitidas da configuração (appsettings.json ou variáveis de ambiente)
+var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+// Validação para garantir que a configuração existe
+if (allowedOrigins == null || !allowedOrigins.Any())
+{
+    throw new InvalidOperationException("Nenhuma origem permitida para CORS foi configurada. Adicione a chave 'AllowedOrigins' no appsettings.json ou como variável de ambiente.");
+}
+
+// Configura a política de CORS para usar as origens lidas da configuração
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins, policy =>
     {
-        policy.WithOrigins(
-            "http://localhost:3000",
-            "https://desafio-stefanini-cadastro-k9tbmcky6-ismael-santos-projects.vercel.app"
-        )
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+        policy.WithOrigins(allowedOrigins) // Usa a variável com as origens
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
+
+// --- Fim da Alteração do CORS ---
+
 
 // Autenticação JWT
 builder.Services.AddAuthentication(options =>
@@ -106,7 +117,7 @@ using (var scope = app.Services.CreateScope())
         context.Users.Add(new User
         {
             Username = "admin",
-            Password = "password123"
+            Password = "password123" // Lembre-se que em um projeto real, a senha deve ser hasheada
         });
         context.SaveChanges();
     }
