@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CadastroPessoas.Api.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+69fd8a822744ecd2ba21c735aa9d1cd93aa7826a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+adfa84738853128374f36ba30d173973185e725f")]
 [assembly: System.Reflection.AssemblyProductAttribute("CadastroPessoas.Api.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CadastroPessoas.Api.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

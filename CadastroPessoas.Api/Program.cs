@@ -8,7 +8,7 @@ using Asp.Versioning;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.Extensions.Options;
 using Asp.Versioning.ApiExplorer;
-using CadastroPessoas.Api.Models; // Adicionei esta referência para o modelo User
+using CadastroPessoas.Api.Models;
 
 // Defini aqui a URL do meu front-end publicado na Vercel para a política de CORS.
 var vercelAppUrl = "https://desafio-stefanini-cadastro-k9tbmcky6-ismael-santos-projects.vercel.app";
@@ -26,7 +26,7 @@ var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // --- Configuração dos Serviços ---
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApiDbContext>(options =>
-    options.UseInMemoryDatabase("PessoasDb") // Para o desafio, usei um banco de dados em memória.
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 // Configurei o versionamento da API para atender aos requisitos extras.
@@ -97,30 +97,27 @@ builder.Services.AddAuthentication(options =>
 // --- Construção e Pipeline da Aplicação ---
 var app = builder.Build();
 
-// --- INÍCIO DA SEÇÃO DE SEEDING DE DADOS ---
-// Esta secção garante que o utilizador 'admin' exista sempre que a aplicação inicia.
+// --- INÍCIO DA SEÇÃO DE SEEDING E CRIAÇÃO DA BASE DE DADOS ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApiDbContext>();
-    // Garante que a base de dados em memória seja criada.
-    context.Database.EnsureCreated();
 
-    // Verifica se já existe algum utilizador. Se não, cria o admin.
+    // Alterei para context.Database.Migrate() para usar o sistema de migrations.
+    context.Database.Migrate();
+
+    // Agora, com a tabela 'Users' garantidamente criada, podemos verificar se o utilizador admin existe.
     if (!context.Users.Any())
     {
         context.Users.Add(new User
         {
             Username = "admin",
-            // A palavra-passe "password123" precisa ser armazenada como um hash.
-            // Para este desafio, vou simplificar e armazená-la diretamente,
-            // mas num projeto real, isto seria um hash.
-            Password = "password123"
+            Password = "password123" 
         });
         context.SaveChanges();
     }
 }
-// --- FIM DA SEÇÃO DE SEEDING DE DADOS ---
+// --- FIM DA SEÇÃO ---
 
 
 if (app.Environment.IsDevelopment())
