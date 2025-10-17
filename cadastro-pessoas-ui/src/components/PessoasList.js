@@ -28,7 +28,7 @@ function PessoasList({ pessoas, onDelete, onEdit, isLoading }) {
       ) : pessoas.length === 0 ? (
         <Typography sx={{ padding: '16px' }}>Nenhum resultado encontrado.</Typography>
       ) : (
-        // A tabela agora é definida como "collapsible" para acessibilidade
+        // A tabela é definida como "collapsible" para acessibilidade
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>

@@ -7,7 +7,10 @@ using Microsoft.OpenApi.Models;
 using Asp.Versioning;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.Extensions.Options;
-using Asp.Versioning.ApiExplorer; // Adicione este using
+using Asp.Versioning.ApiExplorer;
+
+// Defini aqui a URL do meu front-end publicado na Vercel para a política de CORS.
+var vercelAppUrl = "https://desafio-stefanini-cadastro-k9tbmcky6-ismael-santos-projects.vercel.app";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +22,13 @@ if (string.IsNullOrEmpty(jwtKey))
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-// --- Seção de Configuração dos Serviços ---
+// --- Configuração dos Serviços ---
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApiDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+// Configurei o versionamento da API para atender aos requisitos extras.
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -37,11 +41,10 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
-// Adiciona o configurador do Swagger que entende de versionamento
+// Adicionei o Swagger e a configuração para suportar o versionamento e o JWT.
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(options =>
 {
-    // A configuração do JWT para o botão "Authorize"
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -61,14 +64,18 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Minha política de CORS, permitindo acesso tanto do ambiente local quanto do front-end em produção.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins, policy =>
     {
-        policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+        policy.WithOrigins("http://localhost:3000", vercelAppUrl)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
+// Implementei a autenticação JWT para proteger os endpoints.
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -86,13 +93,12 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-// --- Seção de Construção e Pipeline da Aplicação ---
+// --- Construção e Pipeline da Aplicação ---
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    // ATUALIZAÇÃO NO SWAGGER UI para criar o menu dropdown
     app.UseSwaggerUI(options =>
     {
         var descriptions = app.Services.GetRequiredService<IApiVersionDescriptionProvider>().ApiVersionDescriptions;
@@ -105,14 +111,14 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// app.UseHttpsRedirection();
+// A ordem dos middlewares é importante: CORS primeiro, depois Autenticação e Autorização.
 app.UseCors(myAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
-// --- CLASSE AUXILIAR PARA O SWAGGER ---
+// Classe auxiliar para configurar o Swagger de forma que ele entenda as versões da API.
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
     private readonly IApiVersionDescriptionProvider provider;
@@ -131,3 +137,4 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         }
     }
 }
+
