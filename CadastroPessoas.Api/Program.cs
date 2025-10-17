@@ -10,9 +10,6 @@ using Microsoft.Extensions.Options;
 using Asp.Versioning.ApiExplorer;
 using CadastroPessoas.Api.Models;
 
-// Defini aqui a URL do meu front-end publicado na Vercel para a política de CORS.
-var vercelAppUrl = "https://desafio-stefanini-cadastro-k9tbmcky6-ismael-santos-projects.vercel.app";
-
 var builder = WebApplication.CreateBuilder(args);
 
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -29,7 +26,6 @@ builder.Services.AddDbContext<ApiDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-// Configurei o versionamento da API para atender aos requisitos extras.
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -42,7 +38,6 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
-// Adicionei o Swagger e a configuração para suportar o versionamento e o JWT.
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -65,18 +60,21 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Minha política de CORS, permitindo acesso tanto do ambiente local quanto do front-end em produção.
+// CORS - liberar localhost e o domínio do front-end
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins, policy =>
     {
-        policy.WithOrigins("http://localhost:3000", vercelAppUrl)
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(
+            "http://localhost:3000",
+            "https://desafio-stefanini-cadastro-k9tbmcky6-ismael-santos-projects.vercel.app"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
-// Implementei a autenticação JWT para proteger os endpoints.
+// Autenticação JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -93,32 +91,26 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
-// --- Construção e Pipeline da Aplicação ---
 var app = builder.Build();
 
-// --- INÍCIO DA SEÇÃO DE SEEDING E CRIAÇÃO DA BASE DE DADOS ---
+// --- Inicializar banco e criar usuário admin ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApiDbContext>();
 
-    // Uso o sistema de migrations para garantir que o banco de dados está atualizado.
     context.Database.Migrate();
 
-    // Com a tabela 'Users' garantidamente criada, verifico se o utilizador admin existe.
     if (!context.Users.Any())
     {
         context.Users.Add(new User
         {
             Username = "admin",
-            Password = "password123" 
+            Password = "password123"
         });
         context.SaveChanges();
     }
 }
-// --- FIM DA SEÇÃO ---
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -135,20 +127,19 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// A ordem dos middlewares é importante: CORS primeiro.
 app.UseCors(myAllowSpecificOrigins);
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
-// Classe auxiliar para configurar o Swagger de forma que ele entenda as versões da API.
+// --- Classe auxiliar do Swagger ---
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
     private readonly IApiVersionDescriptionProvider provider;
 
-    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => this.provider = provider;
+    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
+        => this.provider = provider;
 
     public void Configure(SwaggerGenOptions options)
     {
@@ -162,4 +153,3 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         }
     }
 }
-
