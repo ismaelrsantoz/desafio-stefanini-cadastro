@@ -15,16 +15,20 @@ var builder = WebApplication.CreateBuilder(args);
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrEmpty(jwtKey))
 {
-    throw new InvalidOperationException("A chave JWT (Jwt:Key) não está configurada no appsettings.json");
+    throw new InvalidOperationException("A chave JWT (Jwt:Key) não está configurada no appsettings.json ou nas variáveis de ambiente");
 }
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // --- Configuração dos Serviços ---
 builder.Services.AddControllers();
+
+// ▼▼▼ SUA ALTERAÇÃO ESTÁ AQUI ▼▼▼
 builder.Services.AddDbContext<ApiDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+    // Trocamos UseSqlite por UseNpgsql para conectar ao PostgreSQL
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+// ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲
 
 builder.Services.AddApiVersioning(options =>
 {
@@ -60,15 +64,12 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// --- Início da Alteração do CORS (SOLUÇÃO RECOMENDADA) ---
-var productionUrl = "https://desafio-stefanini-cadastro.vercel.app"; // <-- Coloque sua URL de produção final aqui
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins, policy =>
     {
-        policy.WithOrigins("*") 
-              .SetIsOriginAllowed(origin => 
+        policy.WithOrigins("*")
+              .SetIsOriginAllowed(origin =>
               {
                   var host = new Uri(origin).Host;
                   return host.EndsWith("-ismael-santos-projects.vercel.app") || host.Equals("desafio-stefanini-cadastro.vercel.app");
@@ -77,7 +78,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
-// --- Fim da Alteração do CORS ---
 
 // Autenticação JWT
 builder.Services.AddAuthentication(options =>
@@ -103,7 +103,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApiDbContext>();
-    context.Database.Migrate();
+    context.Database.Migrate(); // Isso irá aplicar suas migrations no banco PostgreSQL
     if (!context.Users.Any())
     {
         context.Users.Add(new User
