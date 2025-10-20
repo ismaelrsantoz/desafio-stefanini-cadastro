@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using CadastroPessoas.Api.Validation; // Garante que os atributos customizados sejam reconhecidos
+using CadastroPessoas.Api.Validation; 
+
 
 namespace CadastroPessoas.Api.Models
 {

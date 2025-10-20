@@ -31,7 +31,8 @@ namespace CadastroPessoas.Api.Tests
             var controller = new PessoasController(dbContext);
 
             // Act
-            var result = await controller.GetPessoas();
+            // ▼▼▼ CORREÇÃO APLICADA AQUI ▼▼▼
+            var result = await controller.GetPessoas(null, null);
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<IEnumerable<Pessoa>>>(result);
@@ -71,7 +72,8 @@ namespace CadastroPessoas.Api.Tests
 
             // Assert
             var actionResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("CPF já cadastrado no sistema.", actionResult.Value);
+            // ▼▼▼ CORREÇÃO 1 APLICADA AQUI ▼▼▼
+            Assert.Equal("Este CPF já está cadastrado. Para editar, utilize a tela de Consulta.", actionResult.Value);
         }
 
         [Fact]
@@ -157,8 +159,8 @@ namespace CadastroPessoas.Api.Tests
             // Assert
             Assert.IsType<NoContentResult>(result);
             var pessoaDoBanco = await dbContext.Pessoas.FindAsync(1);
-            Assert.NotNull(pessoaDoBanco); // <-- Garante que não é nulo
-            Assert.Equal("Nome Novo", pessoaDoBanco.Nome); // <-- O aviso vai desaparecer
+            Assert.NotNull(pessoaDoBanco);
+            Assert.Equal("Nome Novo", pessoaDoBanco.Nome);
         }
 
         [Fact]
@@ -214,7 +216,9 @@ namespace CadastroPessoas.Api.Tests
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("CPF já cadastrado no sistema para outra pessoa.", badRequestResult.Value);
+            // ▼▼▼ CORREÇÃO 2 APLICADA AQUI ▼▼▼
+            Assert.Equal("Este CPF já pertence a outro registro no sistema.", badRequestResult.Value);
         }
     }
 }
+

@@ -13,7 +13,6 @@ C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\CadastroPessoas.Api.Test
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\CadastroPessoas.Api.Tests.runtimeconfig.json
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\CadastroPessoas.Api.Tests.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\CadastroPessoas.Api.Tests.pdb
-C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.Data.Sqlite.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
@@ -23,7 +22,6 @@ C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.EntityFramewor
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Sqlite.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
-C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
@@ -48,9 +46,6 @@ C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Swashbuckle.AspNetCore.S
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
-C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\System.IO.Pipelines.dll
-C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\System.Text.Encodings.Web.dll
-C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\System.Text.Json.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\xunit.abstractions.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\xunit.assert.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\xunit.core.dll
@@ -127,7 +122,6 @@ C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\linux-armel\nat
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\linux-mips64\native\libe_sqlite3.so
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\linux-musl-arm\native\libe_sqlite3.so
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\linux-musl-arm64\native\libe_sqlite3.so
-C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\linux-musl-s390x\native\libe_sqlite3.so
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\linux-musl-x64\native\libe_sqlite3.so
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\linux-ppc64le\native\libe_sqlite3.so
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\linux-s390x\native\libe_sqlite3.so
@@ -141,7 +135,6 @@ C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\win-arm\native\
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\win-arm64\native\e_sqlite3.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
-C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\CadastroPessoas.Api.dll
 C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\CadastroPessoas.Api.pdb
 C:\STEFANINI\CadastroPessoas.Api.Tests\obj\Debug\net8.0\CadastroPessoas.Api.Tests.csproj.AssemblyReference.cache
@@ -155,3 +148,18 @@ C:\STEFANINI\CadastroPessoas.Api.Tests\obj\Debug\net8.0\refint\CadastroPessoas.A
 C:\STEFANINI\CadastroPessoas.Api.Tests\obj\Debug\net8.0\CadastroPessoas.Api.Tests.pdb
 C:\STEFANINI\CadastroPessoas.Api.Tests\obj\Debug\net8.0\CadastroPessoas.Api.Tests.genruntimeconfig.cache
 C:\STEFANINI\CadastroPessoas.Api.Tests\obj\Debug\net8.0\ref\CadastroPessoas.Api.Tests.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\obj\Debug\net8.0\CadastroPessoas.Api.Tests.sourcelink.json
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Asp.Versioning.Abstractions.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Asp.Versioning.Http.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Asp.Versioning.Mvc.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Asp.Versioning.Mvc.ApiExplorer.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Npgsql.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\STEFANINI\CadastroPessoas.Api.Tests\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
