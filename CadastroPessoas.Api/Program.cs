@@ -12,6 +12,11 @@ using CadastroPessoas.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ▼▼▼ CORREÇÃO PARA O PROBLEMA DE FUSO HORÁRIO (UTC) ▼▼▼
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+// ▲▲▲ FIM DA CORREÇÃO ▲▲▲
+
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrEmpty(jwtKey))
 {
@@ -65,16 +70,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins, policy =>
     {
-        policy.WithOrigins("*")
-              .SetIsOriginAllowed(origin =>
-              {
-                  var host = new Uri(origin).Host;
-                  return host.EndsWith("-ismael-santos-projects.vercel.app") || host.Equals("desafio-stefanini-cadastro.vercel.app");
-              })
+        policy.SetIsOriginAllowed(origin => new Uri(origin).Host.EndsWith(".vercel.app"))
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
+
 
 // Autenticação JWT
 builder.Services.AddAuthentication(options =>
@@ -100,7 +101,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApiDbContext>();
-    context.Database.Migrate(); // Isso irá aplicar suas migrations no banco PostgreSQL
+    context.Database.Migrate(); 
     if (!context.Users.Any())
     {
         context.Users.Add(new User
@@ -112,8 +113,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// ▼▼▼ SUA ALTERAÇÃO ESTÁ AQUI ▼▼▼
-// A condição 'if' foi removida para que o Swagger funcione em produção e desenvolvimento.
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -125,7 +124,6 @@ app.UseSwaggerUI(options =>
         options.SwaggerEndpoint(url, name);
     }
 });
-// ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲
 
 app.UseCors(myAllowSpecificOrigins);
 app.UseAuthentication();
@@ -150,3 +148,4 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         }
     }
 }
+
