@@ -81,6 +81,9 @@ namespace CadastroPessoas.Api.Migrations
                 oldType: "TEXT",
                 oldNullable: true);
 
+            // ▼▼▼ INÍCIO DA CORREÇÃO ▼▼▼
+            // Comentamos ou removemos os AlterColumn originais que causavam o erro.
+            /*
             migrationBuilder.AlterColumn<DateTime>(
                 name: "DataNascimento",
                 table: "Pessoas",
@@ -104,6 +107,13 @@ namespace CadastroPessoas.Api.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "TEXT");
+            */
+
+            // Adicionamos os comandos SQL brutos que o PostgreSQL entende.
+            migrationBuilder.Sql(@"ALTER TABLE ""Pessoas"" ALTER COLUMN ""DataNascimento"" TYPE timestamp with time zone USING ""DataNascimento""::timestamp with time zone;");
+            migrationBuilder.Sql(@"ALTER TABLE ""Pessoas"" ALTER COLUMN ""DataCadastro"" TYPE timestamp with time zone USING ""DataCadastro""::timestamp with time zone;");
+            migrationBuilder.Sql(@"ALTER TABLE ""Pessoas"" ALTER COLUMN ""DataAtualizacao"" TYPE timestamp with time zone USING ""DataAtualizacao""::timestamp with time zone;");
+            // ▲▲▲ FIM DA CORREÇÃO ▲▲▲
 
             migrationBuilder.AlterColumn<string>(
                 name: "Cpf",
