@@ -12,7 +12,7 @@ namespace CadastroPessoas.Api.Models
 
         public string? Sexo { get; set; }
 
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "O endereço de e-mail informado não é válido.")]
         public string? Email { get; set; }
 
         [Required]
