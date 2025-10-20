@@ -23,12 +23,9 @@ var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // --- Configuração dos Serviços ---
 builder.Services.AddControllers();
 
-// ▼▼▼ SUA ALTERAÇÃO ESTÁ AQUI ▼▼▼
 builder.Services.AddDbContext<ApiDbContext>(options =>
-    // Trocamos UseSqlite por UseNpgsql para conectar ao PostgreSQL
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-// ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲
 
 builder.Services.AddApiVersioning(options =>
 {
@@ -115,20 +112,20 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-if (app.Environment.IsDevelopment())
+// ▼▼▼ SUA ALTERAÇÃO ESTÁ AQUI ▼▼▼
+// A condição 'if' foi removida para que o Swagger funcione em produção e desenvolvimento.
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    var descriptions = app.Services.GetRequiredService<IApiVersionDescriptionProvider>().ApiVersionDescriptions;
+    foreach (var description in descriptions)
     {
-        var descriptions = app.Services.GetRequiredService<IApiVersionDescriptionProvider>().ApiVersionDescriptions;
-        foreach (var description in descriptions)
-        {
-            var url = $"/swagger/{description.GroupName}/swagger.json";
-            var name = description.GroupName.ToUpperInvariant();
-            options.SwaggerEndpoint(url, name);
-        }
-    });
-}
+        var url = $"/swagger/{description.GroupName}/swagger.json";
+        var name = description.GroupName.ToUpperInvariant();
+        options.SwaggerEndpoint(url, name);
+    }
+});
+// ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲
 
 app.UseCors(myAllowSpecificOrigins);
 app.UseAuthentication();
